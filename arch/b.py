@@ -7,4 +7,3 @@ if __name__ == "__main__":
     print("""Put Your 'Boot' Disk
     ex) /dev/sdx""")
     DEV_BOOT=input() 
-
