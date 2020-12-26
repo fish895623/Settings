@@ -1,10 +1,10 @@
 #!/bin/bash
+pacstrap_list="base linux linux-firmware vim networkmanager base-devel man-db man-pages sudo zsh grub efibootmgr"
+echo -n "Select root device (Must): "; read -r DEV
+echo -n "Select mount dir (default /mnt): "; read -r MNT_DIR
+echo -n "Put DIR (you must exclude, swap var lib)"; read -r DIR
+echo -n "Put DIR with nocowdata ex) swap var"; read -r DIR_NOCOW
 if [[ $1 == '' ]]; then
-    pacstrap_list="base linux linux-firmware vim networkmanager base-devel man-db man-pages sudo zsh grub efibootmgr"
-    echo -n "Select root device (Must): "; read -r DEV
-    echo -n "Select mount dir (default /mnt): "; read -r MNT_DIR
-    echo -n "Put DIR (you must exclude, swap var lib)"; read -r DIR
-    echo -n "Put DIR with nocowdata ex) swap var"; read -r DIR_NOCOW
     if [[ $MNT_DIR == '' ]]; then 
         MNT_DIR="/mnt"
     fi
