@@ -1,65 +1,51 @@
 #!/bin/bash
-DEV="/dev/sda2"
-MNT_DIR="/mnt"
-DIR=".snapshots home opt root srv tmp"
-NOCOWDATA="swap var"
-pacstrap_list="base linux linux-firmware vim networkmanager base-devel man-db man-pages sudo zsh"
-localtime="Asia/Seoul"
-hostname="localhost"
+pacstrap_list="base linux linux-firmware vim networkmanager base-devel man-db man-pages sudo zsh grub efibootmgr"
+echo -n "Select root device (Must): ";              read -r DEV
+echo -n "Select mount dir (default /mnt): ";        read -r MNT_DIR
+echo -n "Put DIR (you must exclude, swap var lib)"; read -r DIR
+echo -n "Put DIR with nocowdata ex) swap var";      read -r DIR_NOCOW
+if [[ $1 == '' ]]; then
+if [[ $MNT_DIR == '' ]];    then MNT_DIR="/mnt"; fi
+if [[ $DIR == '' ]];        then DIR=".snapshots home opt root srv tmp"; fi
+if [[ $DIR_NOCOW == '' ]];  then DIR_NOCOW="swap var"; fi
 
-mount ${DEV} ${MNT_DIR}
+echo -n "Mount root dev..."
+sleep 1
+mount "$DEV" "$MNT_DIR"
 
-# Make Subvolume
-echo ${DIR} ${NOCOWDATA}
-btrfs subvolume create ${MNT_DIR}/@
-for i in ${DIR} ${NOCOWDATA}
-do
-	btrfs subvolume create ${MNT_DIR}/@${i}
+echo -n "Make Subvolume..."
+sleep 1
+btrfs subvolume create $MNT_DIR/@   # root directory
+for i in $DIR $DIR_NOCOW; do
+    btrfs subvolume create $MNT_DIR/@"$i"
 done
-umount ${MNT_DIR}
+
+echo -n "Unmount directory..."
+sleep 1
+umount -R $MNT_DIR
 
 # Mount Dir
-echo Mount root directory...
-mount -o noatime,compress=lzo,space_cache,subvol=@ ${DEV} ${MNT_DIR}
+echo -n "Mount root directory..."
+sleep 1
+mount -o noatime,compress=lzo,space_cache,subvol=@ $DEV $MNT_DIR
 
-echo Mount '""${DIR}""'
-for i in ${DIR}
-do
-	mkdir -p ${MNT_DIR}/${i}
-	mount -o noatime,compress=lzo,space_cache,subvol=@${i} ${DEV} ${MNT_DIR}/${i}
+echo -n "Mount '"$DIR"'..."
+sleep 1
+for i in $DIR; do
+    mkdir -p $MNT_DIR/$i
+    mount -o noatime,compress=lzo,space_cache,subvol=@$i $DEV $MNT_DIR/$i
 done
 
-echo Mount '""${NOCOWDATA}""'
-for i in ${NOCOWDATA}
-do
-	mkdir -p ${MNT_DIR}/${i}
-	mount -o nodatacow,subvol=@${i} ${DEV} ${MNT_DIR}/${i}
+echo -n "Mount '"$DIR_NOCOW"'..."
+sleep 1
+for i in $DIR_NOCOW; do
+    mkdir -p $MNT_DIR/$i
+    mount -o nodatacow,subvol=@$i $DEV $MNT_DIR/$i
 done
 
-mkdir -p ${MNT_DIR}/boot
-mount /dev/sda1 $MNT_DIR/boot
+pacstrap $MNT_DIR $pacstrap_list
+genfstab -U $MNT_DIR >> $MNT_DIR/etc/fstab
 
-# Install System
-pacstrap ${MNT_DIR} ${pacstrap_list}
+echo "curl https://raw.githubusercontent.com/fish895623/Settings/main/arch/chroot.sh | bash" >> $MNT_DIR/root/.bashrc
 
-# Create fstab file
-genfstab -U ${MNT_DIR} >> ${MNT_DIR}/etc/fstab
-
-# Language
-echo LANG=en_US.UTF-8 > ${MNT_DIR}/etc/locale.conf
-
-# Locale
-echo en_US.UTF-8 > ${MNT_DIR}/etc/locale.gen
-
-# Localetime
-ln -sf ${MNT_DIR}/usr/share/zoneinfo/${localtime} ${MNT_DIR}/etc/localtime
-
-# Hostname
-echo ${hostname} > ${MNT_DIR}/etc/hostname
-
-# sudoers
-sed -i "s/# %wheel ALL=(ALL) NOPASSWD: ALL/%wheel ALL=(ALL) NOPASSWD: ALL/" ${MNT_DIR}/etc/sudoers
-
-echo After Finish Install Arch, run bellow
-
-arch-chroot ${MNT_DIR}
+arch-chroot $MNT_DIR
