@@ -1,9 +1,9 @@
 #!/bin/bash
 pacstrap_list="base linux linux-firmware vim networkmanager base-devel man-db man-pages sudo zsh grub efibootmgr"
-echo -n "Select root device (Must): ";              read -r DEV
-echo -n "Select mount dir (default /mnt): ";        read -r MNT_DIR
-echo -n "Put DIR (you must exclude, swap var lib)"; read -r DIR
-echo -n "Put DIR with nocowdata ex) swap var";      read -r DIR_NOCOW
+echo -n "Select root device (Must): ";              read DEV
+echo -n "Select mount dir (default /mnt): ";        read MNT_DIR
+echo -n "Put DIR (you must exclude, swap var lib)"; read DIR
+echo -n "Put DIR with nocowdata ex) swap var";      read DIR_NOCOW
 if [[ ${MNT_DIR} == '' ]];    then MNT_DIR="/mnt"; fi
 if [[ ${DIR} == '' ]];        then DIR=".snapshots home opt root srv tmp"; fi
 if [[ ${DIR_NOCOW} == '' ]];  then DIR_NOCOW="swap var"; fi
