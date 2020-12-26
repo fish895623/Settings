@@ -1,7 +1,8 @@
-#!/bin/bash
-<<<<<<< HEAD
+#!/bin/zsh
 a=`echo abbbb`
-if [[ $a == *"bb"* ]]; then echo error; fi
-=======
-passwd root
->>>>>>> 9054da66ced6069f1db063d2565e450172f108d0
+if [[ $a == *"bb"* ]]; then echo Error occured; exit; fi
+echo abbbb
+echo abbbb
+echo abbbb
+echo abbbb
+echo abbbb
