@@ -34,4 +34,4 @@ echo -n "Enable NetworkManager"
 sleep 1
 systemctl enable NetworkManager.service
 
-sed -i "s/curl https\:\/\/raw.githubusercontent.com\/fish895623\/Settings\/main\/arch\/chroot.sh | bash//" /root/.bashrc
+sed -i "s/curl https\:\/\/raw.githubusercontent.com\/fish895623\/Settings\/main\/arch\/install.sh | bash -s chroot//" /root/.bashrc

@@ -45,6 +45,6 @@ done
 pacstrap ${MNT_DIR} $pacstrap_list
 genfstab -U ${MNT_DIR} >> ${MNT_DIR}/etc/fstab
 
-echo "curl https://raw.githubusercontent.com/fish895623/Settings/main/arch/chroot.sh | bash" >> ${MNT_DIR}/root/.bashrc
+echo "curl https://raw.githubusercontent.com/fish895623/Settings/main/arch/install.sh | bash -s chroot" >> ${MNT_DIR}/root/.bashrc
 
 arch-chroot ${MNT_DIR}
