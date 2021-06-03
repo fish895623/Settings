@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+DATE=$(date)
+GIT_DIR=git_settings
+
+cp -r ${HOME}/.config/nvim/ ${HOME}/${GIT_DIR}
+
+cd ${HOME}/${GIT_DIR} && \
+	git add . && \
+	git commit -m "${DATE}"
+
